@@ -3,8 +3,8 @@ import math
 from typing import Optional, Dict, List, Tuple
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import json
-#author: https://github.com/Diving-Fish/mai-bot
 
+#adapted from https://github.com/Diving-Fish/mai-bot
 scoreRank = 'D C B BB BBB A AA AAA S S+ SS SS+ SSS SSS+'.split(' ')
 combo = ' FC FC+ AP AP+'.split(' ')
 diffs = 'Basic Advanced Expert Master Re:Master'.split(' ')
