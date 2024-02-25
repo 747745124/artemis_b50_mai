@@ -14,7 +14,7 @@ game_version = 21 # 19 for fes, 20 for fes plus, 21 for buddies
 display_name = "Name" # this is the name to be displayed on the b50
 is_save = False
 is_show = True
-use_alt = True # use alternative of b50 format
+use_alt = False # use alternative of b50 format
 
 # constants
 RANK_DEFINITIONS = [
