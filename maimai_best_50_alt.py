@@ -166,11 +166,8 @@ class DrawBestAlt:
             try:
                 # 根据id和diff获取对应难度的note数量
                 dxscore = mai[str(info.idNum)]['dxScore'][info.diff]
-            except KeyError:
-                if info.dxScore != 0:
-                    dxscore = info.dxScore
-                else:
-                    dxscore = 999
+            except IndexError:
+                dxscore = mai[str(info.idNum)]['dxScore'][-1]
 
             # dxscore = sum(mai.total_list.by_id(str(info.idNum)).charts[info.diff].notes) * 3
             diff_sum_dx = info.dxScore / dxscore * 100
