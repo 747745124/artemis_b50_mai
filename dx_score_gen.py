@@ -4,8 +4,8 @@ import json
 
 md_cache = {}
 
-path = ""  # like Sinmai_Data\StreamingAssets\
-opt_path = ""  # like options
+path = "" # e.g Sinmai_Data\StreamingAssets\
+opt_path = ""  # e.g. /options
 
 
 def xml_to_json(xml_file):
@@ -22,10 +22,15 @@ def xml_to_json(xml_file):
             music_data[music_id]['title'] = child.find('str').text
         elif child.tag == 'notesData':
             music_data[music_id]['dxScore'] = []
-            for notes in child:
-                if int(notes.find('maxNotes').text) == 0:
-                    continue
-                music_data[music_id]['dxScore'].append(int(notes.find('maxNotes').text) * 3)
+            # max notes data may not exist in the xml file
+            try:
+                for notes in child:
+                    if int(notes.find('maxNotes').text) == 0:
+                        continue
+                    music_data[music_id]['dxScore'].append(int(notes.find('maxNotes').text) * 3)
+            except AttributeError:
+                #default value is 9999 to prevent divide by zero error
+                music_data[music_id]['dxScore'].append(9999)
 
     return music_data
 

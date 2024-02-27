@@ -6,6 +6,8 @@ from maimai_best_50_alt import local_generate50_alt
 import maimai_best_50
 import maimai_best_50_alt
 
+# Run dxScoreGen.py first before running this script
+# The dxScoreGen parses the Music.xml files and stores the dxScore data of each chart
 
 # db config
 user_id = 10000 #10000 by default
@@ -19,8 +21,6 @@ is_save = False
 is_show = True
 use_alt = True # use alternative of b50 format
 use_theme = 1 # the theme for b50, 0 for fes, 1 for buddies
-
-
 
 
 #theme preprocess

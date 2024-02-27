@@ -22,20 +22,26 @@ Make sure you are able to access the Artemis server. (At least READ access)
 
 > All copyrights belongs to SEGA. Please delete the files within 24 hours after download.
 
-3. Change parameters in `gen_rating_artemis.py`
+3. (Optional) Run `dx_score_gen.py` to preprocess the xml files to generate `md_cache.json`
 
-   * database host / password
+* This files contains dx score information for each chart.
+* A preprocessed version is provided
 
-   * Artemis game version
+4. Change parameters in `gen_rating_artemis.py`
 
-   * display_name
+* database host / password
 
-   * theme
+* Artemis game version
 
-   * layout
+* `display_name`
 
-4. Run `gen_rating_artemis.py`
-   * by default the result image is under the root folder
+* `use_theme`
+
+* `use_alt` (layout)
+
+5. Run `gen_rating_artemis.py`
+
+* by default the result image is under the root folder
 
 
 

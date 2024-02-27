@@ -154,24 +154,26 @@ class DrawBestAlt:
                 fc = Image.open(pic_dir + f'UI_MSS_MBase_Icon_{mod_string(info.combo)}.png').resize((45, 45))
                 self._im.alpha_composite(fc, (x + 260, y + 98))
 
-            # full sync is not supported yet
             if info.fs != "":
                 fs = Image.open(pic_dir + f'UI_MSS_MBase_Icon_{mod_string(info.fs)}.png').resize((45, 45))
                 self._im.alpha_composite(fs, (x + 315, y + 98))
 
-            # dx star is not supported yet
-            with open("md_cache.json", "r", encoding="utf-8") as f:
-                mai = json.load(f)
-
+            # read max deluxe score from cache
             try:
-                # 根据id和diff获取对应难度的note数量
-                dxscore = mai[str(info.idNum)]['dxScore'][info.diff]
-            except IndexError:
-                dxscore = mai[str(info.idNum)]['dxScore'][-1]
+                with open("md_cache.json", "r", encoding="utf-8") as f:
+                    mai = json.load(f)
 
-            # dxscore = sum(mai.total_list.by_id(str(info.idNum)).charts[info.diff].notes) * 3
-            diff_sum_dx = info.dxScore / dxscore * 100
-            dxtype, dxnum = dxScore(diff_sum_dx)
+                try:
+                    # 根据id和diff获取对应难度的note数量
+                    # Get the number of notes for the corresponding difficulty according to id and diff
+                    dxscore = mai[str(info.idNum)]['dxScore'][info.diff]
+                except IndexError:
+                    dxscore = mai[str(info.idNum)]['dxScore'][-1]
+
+                diff_sum_dx = info.dxScore / dxscore * 100
+                dxtype, dxnum = dxScore(diff_sum_dx)
+            except FileNotFoundError:
+                dxtype, dxnum, dxscore = 0, 0, ""
 
             for _ in range(dxnum):
                 self._im.alpha_composite(self.dxstar[dxtype], (x + DXSTAR_DEST[dxnum] + 20 * _, y + 74))
@@ -185,7 +187,7 @@ class DrawBestAlt:
             r = self._tb.get_box(p, 32)
             self._tb.draw(x + 155, y + 70, 32, p, TEXT_COLOR[info.diff], anchor='ld')
             self._tb.draw(x + 155 + r[2], y + 68, 22, f'.{s}%', TEXT_COLOR[info.diff], anchor='ld')
-            self._tb.draw(x + 340, y + 60, 18, f'{info.dxScore}/{dxscore}', TEXT_COLOR[info.diff], anchor='mm')
+            self._tb.draw(x + 340, y + 60, 18, f'{info.dxScore} {"/ " + str(dxscore) if dxscore != "" else dxscore}', TEXT_COLOR[info.diff], anchor='mm')
             self._tb.draw(x + 155, y + 80, 22, f'{info.ds} -> {info.ra}', TEXT_COLOR[info.diff], anchor='lm')
 
     def draw(self):
