@@ -3,6 +3,9 @@ from colorama import Fore, Style
 import json
 from maimai_best_50 import local_generate50
 from maimai_best_50_alt import local_generate50_alt
+import maimai_best_50
+import maimai_best_50_alt
+
 
 # db config
 user_id = 10000 #10000 by default
@@ -11,10 +14,25 @@ db_user = "aime"
 db_password = "" #config your password
 db_database = "aime"
 game_version = 21 # 19 for fes, 20 for fes plus, 21 for buddies
-display_name = "Name" # this is the name to be displayed on the b50
+display_name = "Naoyuki" # this is the name to be displayed on the b50
 is_save = False
 is_show = True
-use_alt = False # use alternative of b50 format
+use_alt = True # use alternative of b50 format
+use_theme = 1 # the theme for b50, 0 for fes, 1 for buddies
+
+
+
+
+#theme preprocess
+suffix = ""
+if use_theme == 0:
+    suffix = "_fes"
+
+#add suffix before .png
+maimai_best_50.logoPath = maimai_best_50.logoPath.replace(".png", f"{suffix}.png")
+maimai_best_50.bgPath = maimai_best_50.bgPath.replace(".png", f"{suffix}.png")
+maimai_best_50_alt.logoPath_alt = maimai_best_50_alt.logoPath_alt.replace(".png", f"{suffix}.png")
+maimai_best_50_alt.bgPath_alt = maimai_best_50_alt.bgPath_alt.replace(".png", f"{suffix}.png")
 
 # constants
 RANK_DEFINITIONS = [
