@@ -4,7 +4,8 @@ import json
 
 md_cache = {}
 
-path = ""  # like StreamingAssets\A000\music etc
+path = ""  # like Sinmai_Data\StreamingAssets\
+opt_path = ""  # like options
 
 
 def xml_to_json(xml_file):
@@ -29,7 +30,7 @@ def xml_to_json(xml_file):
     return music_data
 
 
-def process_directory(directory):
+def process(directory):
     global md_cache
 
     for root, dirs, files in os.walk(directory):
@@ -40,10 +41,23 @@ def process_directory(directory):
                 json_data = xml_to_json(xml_file)
                 for music_id, data in json_data.items():
                     md_cache[music_id] = data
-                    # print("Converted and added to md_cache:", json.dumps(json_data, indent=4))
 
 
-process_directory(path)
+def process_folder(tag_path):
+    for subdir in os.listdir(tag_path):
 
+        if os.path.isdir(os.path.join(tag_path, subdir)):
+            if subdir.startswith(('A', 'H')) and subdir[1:].isdigit():
+                music_path = os.path.join(tag_path, subdir, "Music")
+
+                if os.path.exists(music_path) and os.path.isdir(music_path):
+                    process(music_path)
+
+
+process_folder(path)
+if opt_path != "":
+    process_folder(opt_path)
+#
 with open('md_cache.json', 'w', encoding='utf-8') as f:
     json.dump(md_cache, f, ensure_ascii=False, indent=4)
+
