@@ -1,6 +1,6 @@
 ### ARTEMIS Maimai B50 Generator
 
-This is a simple tool for B50 (Best 50 scores) generator for those who use [ARTEMIS](https://gitea.tendokyu.moe/Hay1tsme/artemis) as their maimai server.
+This is a simple tool for B50 (Best 50 scores) generator for those who use [ARTEMIS](https://gitea.tendokyu.moe/Hay1tsme/artemis) as their maimai server. It is based on maimaiDX and maibot project.
 
 ![image-20240225014842014](./README_images/image-20240225014842014.png)
 
@@ -18,11 +18,22 @@ Make sure you are able to access the Artemis server. (At least READ access)
    pip install -r /path/to/requirements.txt
    ```
 
-2. Download [image and font resources](https://www.diving-fish.com/maibot/static.zip), extract the folder with below hierarchy ![image-20240225015600208](./README_images/image-20240225015600208.png)
+2. Download [image and font resources](https://drive.google.com/file/d/1Kl6dZVPR60DWcQqbtITeXAMnsK4ZTjes/view?usp=sharing), place the folder with below hierarchy.![image-20240225015600208](./README_images/image-20240225015600208.png)
+
+> All copyrights belongs to SEGA. Please delete the files within 24 hours after download.
+
 3. Change parameters in `gen_rating_artemis.py`
+
    * database host / password
-   * artemis game version
-   * user_id
+
+   * Artemis game version
+
+   * display_name
+
+   * theme
+
+   * layout
+
 4. Run `gen_rating_artemis.py`
    * by default the result image is under the root folder
 
@@ -33,3 +44,5 @@ Make sure you are able to access the Artemis server. (At least READ access)
 https://github.com/Diving-Fish/mai-bot
 
 https://gitea.tendokyu.moe/Hay1tsme/artemis
+
+https://github.com/Yuri-YuzuChaN/maimaiDX

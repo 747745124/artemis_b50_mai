@@ -9,6 +9,8 @@ from maimai_best_50 import computeRa
 pic_dir = './static/mai/pic_alt/'
 cover_dir = './static/mai/cover_alt/'
 rating_dir = './static/mai/rating/'
+logoPath_alt = 'logo.png'
+bgPath_alt = 'b40_bg.png'
 
 def mod_string(in_str):
     in_str = in_str.upper()
@@ -181,7 +183,7 @@ class DrawBestAlt:
         expert = Image.open(pic_dir + 'b40_score_expert.png')
         master = Image.open(pic_dir + 'b40_score_master.png')
         remaster = Image.open(pic_dir + 'b40_score_remaster.png')
-        logo = Image.open(pic_dir + 'logo.png').resize((378, 172))
+        logo = Image.open(pic_dir + logoPath_alt).resize((378, 172))
         dx_rating = Image.open(pic_dir + self._findRaPic()).resize((300, 59))
         Name = Image.open(pic_dir + 'Name.png')
         MatchLevel = Image.open(pic_dir + self._findMatchLevel()).resize((134, 55))
@@ -192,8 +194,8 @@ class DrawBestAlt:
         # unsupported yet
         # self.dxstar = [Image.open(pic_dir + f'UI_RSL_DXScore_Star_0{_ + 1}.png').resize((20, 20)) for _ in range(3)]
 
-        # 作图
-        self._im = Image.open(pic_dir + 'b40_bg.png').convert('RGBA')
+        # backgroud
+        self._im = Image.open(pic_dir + bgPath_alt).convert('RGBA')
 
         self._im.alpha_composite(logo, (5, 130))
 

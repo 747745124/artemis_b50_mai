@@ -8,6 +8,9 @@ import json
 scoreRank = 'D C B BB BBB A AA AAA S S+ SS SS+ SSS SSS+'.split(' ')
 combo = ' FC FC+ AP AP+'.split(' ')
 diffs = 'Basic Advanced Expert Master Re:Master'.split(' ')
+logoPath = 'UI_CMN_TabTitle_MaimaiTitle_Ver214.png'
+bgPath = 'UI_TTR_BG_Base_Plus.png'
+
 
 def get_cover_len5_id(mid) -> str:
     mid = int(mid)
@@ -104,7 +107,7 @@ class DrawBest(object):
         self.playerRating = self.sdRating + self.dxRating
         self.pic_dir = './static/mai/pic/'
         self.cover_dir = './static/mai/cover/'
-        self.img = Image.open(self.pic_dir + 'UI_TTR_BG_Base_Plus.png').convert('RGBA')
+        self.img = Image.open(self.pic_dir + bgPath).convert('RGBA')
         self.ROWS_IMG = [2]
         for i in range(6):
             self.ROWS_IMG.append(116 + 96 * i)
@@ -310,7 +313,7 @@ class DrawBest(object):
             img.paste(temp, (self.COLOUMS_IMG[j + 8] + 4, self.ROWS_IMG[i + 1] + 4))
 
     def draw(self):
-        splashLogo = Image.open(self.pic_dir + 'UI_CMN_TabTitle_MaimaiTitle_Ver214.png').convert('RGBA')
+        splashLogo = Image.open(self.pic_dir + logoPath).convert('RGBA')
         splashLogo = self._resizePic(splashLogo, 0.65)
         self.img.paste(splashLogo, (10, 10), mask=splashLogo.split()[3])
 
