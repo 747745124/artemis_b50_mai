@@ -4,27 +4,29 @@ from typing import List, Optional, Tuple, Union, Dict
 from PIL import Image, ImageDraw
 from maimai_best_50 import computeRa
 
-#adapted from https://github.com/Yuri-YuzuChaN/maimaiDX
-#dx score not supported, rank / plate / logo not supported
+# adapted from https://github.com/Yuri-YuzuChaN/maimaiDX
+# dx score not supported, rank / plate / logo not supported
 pic_dir = './static/mai/pic_alt/'
 cover_dir = './static/mai/cover_alt/'
 rating_dir = './static/mai/rating/'
 logoPath_alt = 'logo.png'
 bgPath_alt = 'b40_bg.png'
 
+
 def mod_string(in_str):
     in_str = in_str.upper()
     in_str = in_str.replace('P', 'p')
     return in_str
 
+
 class ChartInfoAlt(object):
-    def __init__(self, idNum:str, diff:int, tp:str, achievement:float, ra:int, combo:str, rate:str,
-                 title:str, ds:float, lv:str, fs:str, dxScore:int):
+    def __init__(self, idNum: str, diff: int, tp: str, achievement: float, ra: int, combo: str, rate: str,
+                 title: str, ds: float, lv: str, fs: str, dxScore: int):
         self.idNum = idNum
         self.diff = diff
         self.tp = tp
         self.achievement = achievement
-        self.ra = computeRa(ds,achievement)
+        self.ra = computeRa(ds, achievement)
         self.combo = combo
         self.rate = rate
         self.title = title
@@ -42,8 +44,8 @@ class ChartInfoAlt(object):
     def __lt__(self, other):
         return self.ra < other.ra
 
-    #ds for internal level
-    #ra for track rating
+    # ds for internal level
+    # ra for track rating
     @classmethod
     def from_json_local(cls, data):
         return cls(
@@ -61,9 +63,10 @@ class ChartInfoAlt(object):
             dxScore=data["dxScore"]
         )
 
+
 class DrawBestAlt:
 
-    def __init__(self, sd_best, dx_best, display_name = "YourName"):
+    def __init__(self, sd_best, dx_best, display_name="YourName"):
         self.user_name = display_name
 
         self.rating = 0
@@ -80,8 +83,7 @@ class DrawBestAlt:
         self.rating = self.sdRating + self.dxRating
 
         # not implemented yet
-        self.plate = None        
-        
+        self.plate = None
 
     def _findRaPic(self) -> str:
         if self.rating < 1000:
@@ -108,7 +110,7 @@ class DrawBestAlt:
             num = '11'
         return f'UI_CMN_DXRating_{num}.png'
 
-    #currently not implemented
+    # currently not implemented
     def _findMatchLevel(self) -> str:
         # if self.addRating <= 10:
         #     num = f'{self.addRating:02d}'
@@ -121,7 +123,8 @@ class DrawBestAlt:
         y = 430 if type_t else 1670
         dy = 170
 
-        TEXT_COLOR = [(255, 255, 255, 255), (255, 255, 255, 255), (255, 255, 255, 255), (255, 255, 255, 255), (103, 20, 141, 255)]
+        TEXT_COLOR = [(255, 255, 255, 255), (255, 255, 255, 255), (255, 255, 255, 255), (255, 255, 255, 255),
+                      (103, 20, 141, 255)]
         DXSTAR_DEST = [0, 330, 320, 310, 300, 290]
 
         for num, info in enumerate(data):
@@ -131,13 +134,13 @@ class DrawBestAlt:
             else:
                 x += 416
 
-            #if not found, use default cover
+            # if not found, use default cover
             try:
                 cover = Image.open(cover_dir + f'{info.idNum}.png').resize((135, 135))
             except:
                 cover = Image.open(cover_dir + '0.png').resize((135, 135))
 
-            info.type = 'DX' if type_t else 'SD'
+            info.type = 'DX' if int(info.idNum) > 10000 else 'SD'
             version = Image.open(pic_dir + f'UI_RSL_MBase_Parts_{info.type}.png').resize((55, 19))
 
             rate = Image.open(pic_dir + f'UI_TTR_Rank_{mod_string(info.rate)}.png').resize((95, 44))
@@ -150,19 +153,28 @@ class DrawBestAlt:
             if info.combo != "":
                 fc = Image.open(pic_dir + f'UI_MSS_MBase_Icon_{mod_string(info.combo)}.png').resize((45, 45))
                 self._im.alpha_composite(fc, (x + 260, y + 98))
-            
-            #full sync is not supported yet
+
+            # full sync is not supported yet
             if info.fs != "":
                 fs = Image.open(pic_dir + f'UI_MSS_MBase_Icon_{mod_string(info.fs)}.png').resize((45, 45))
                 self._im.alpha_composite(fs, (x + 315, y + 98))
-            
-            #dx star is not supported yet
-            # dxscore = sum(mai.total_list.by_id(str(info.idNum)).charts[info.diff].notes) * 3
-            # diff_sum_dx = info.dxScore / dxscore * 100
-            # dxtype, dxnum = dxScore(diff_sum_dx)
 
-            # for _ in range(dxnum):
-            #     self._im.alpha_composite(self.dxstar[dxtype], (x + DXSTAR_DEST[dxnum] + 20 * _, y + 74))
+            # dx star is not supported yet
+            with open("md_cache.json", "r", encoding="utf-8") as f:
+                mai = json.load(f)
+
+            try:
+                # 根据id和diff获取对应难度的note数量
+                dxscore = mai[str(info.idNum)]['dxScore'][info.diff]
+            except IndexError:
+                dxscore = mai[str(info.idNum)]['dxScore'][-1]
+
+            # dxscore = sum(mai.total_list.by_id(str(info.idNum)).charts[info.diff].notes) * 3
+            diff_sum_dx = info.dxScore / dxscore * 100
+            dxtype, dxnum = dxScore(diff_sum_dx)
+
+            for _ in range(dxnum):
+                self._im.alpha_composite(self.dxstar[dxtype], (x + DXSTAR_DEST[dxnum] + 20 * _, y + 74))
 
             self._tb.draw(x + 40, y + 148, 20, info.idNum, anchor='mm')
             title = info.title
@@ -173,11 +185,11 @@ class DrawBestAlt:
             r = self._tb.get_box(p, 32)
             self._tb.draw(x + 155, y + 70, 32, p, TEXT_COLOR[info.diff], anchor='ld')
             self._tb.draw(x + 155 + r[2], y + 68, 22, f'.{s}%', TEXT_COLOR[info.diff], anchor='ld')
-            self._tb.draw(x + 340, y + 60, 18, f'{info.dxScore}', TEXT_COLOR[info.diff], anchor='mm')
+            self._tb.draw(x + 340, y + 60, 18, f'{info.dxScore}/{dxscore}', TEXT_COLOR[info.diff], anchor='mm')
             self._tb.draw(x + 155, y + 80, 22, f'{info.ds} -> {info.ra}', TEXT_COLOR[info.diff], anchor='lm')
 
     def draw(self):
-        
+
         basic = Image.open(pic_dir + 'b40_score_basic.png')
         advanced = Image.open(pic_dir + 'b40_score_advanced.png')
         expert = Image.open(pic_dir + 'b40_score_expert.png')
@@ -192,7 +204,7 @@ class DrawBestAlt:
         self._diff = [basic, advanced, expert, master, remaster]
 
         # unsupported yet
-        # self.dxstar = [Image.open(pic_dir + f'UI_RSL_DXScore_Star_0{_ + 1}.png').resize((20, 20)) for _ in range(3)]
+        self.dxstar = [Image.open(pic_dir + f'UI_RSL_DXScore_Star_0{_ + 1}.png').resize((20, 20)) for _ in range(3)]
 
         # backgroud
         self._im = Image.open(pic_dir + bgPath_alt).convert('RGBA')
@@ -202,15 +214,16 @@ class DrawBestAlt:
         if self.plate:
             plate = Image.open(pic_dir + f'{self.plate}.png').resize((1420, 230))
         else:
-            plate = Image.open(pic_dir + 'UI_Plate_300101.png').resize((1420, 230))
+            plate = Image.open(pic_dir + 'UI_Plate_409504.png').resize((1420, 230))
 
         self._im.alpha_composite(plate, (390, 100))
-        icon = Image.open(pic_dir + 'UI_Icon_309503.png').resize((214, 214))
+        icon = Image.open(pic_dir + 'UI_Icon_409501.png').resize((214, 214))
         self._im.alpha_composite(icon, (398, 108))
         self._im.alpha_composite(dx_rating, (620, 122))
         Rating = f'{self.rating:05d}'
         for n, i in enumerate(Rating):
-            self._im.alpha_composite(Image.open(pic_dir + f'UI_NUM_Drating_{i}.png').resize((28, 34)), (760 + 23 * n, 137))
+            self._im.alpha_composite(Image.open(pic_dir + f'UI_NUM_Drating_{i}.png').resize((28, 34)),
+                                     (760 + 23 * n, 137))
         self._im.alpha_composite(Name, (620, 200))
         self._im.alpha_composite(MatchLevel, (935, 205))
         self._im.alpha_composite(ClassLevel, (926, 105))
@@ -222,13 +235,16 @@ class DrawBestAlt:
         self._tb = DrawText(text_im, './static/Torus SemiBold.otf')
 
         self._siyuan.draw(635, 235, 40, self.user_name, (0, 0, 0, 255), 'lm')
-        self._tb.draw(847, 295, 28, f'B35: {self.sdRating} + B15: {self.dxRating} = {self.rating}', (0, 0, 0, 255), 'mm', 3, (255, 255, 255, 255))
-        self._meiryo.draw(900, 2365, 35, f'Designed by Yuri-YuzuChaN & BlueDeer233 | Generated by ARTEMIS', (103, 20, 141, 255), 'mm', 3, (255, 255, 255, 255))
+        self._tb.draw(847, 295, 28, f'B35: {self.sdRating} + B15: {self.dxRating} = {self.rating}', (0, 0, 0, 255),
+                      'mm', 3, (255, 255, 255, 255))
+        self._meiryo.draw(900, 2365, 35, f'Designed by Yuri-YuzuChaN & BlueDeer233  | Generated by ARTEMIS',
+                          (103, 20, 141, 255), 'mm', 3, (255, 255, 255, 255))
 
         self.whiledraw(self.sd_best, True)
         self.whiledraw(self.dx_best, False)
 
         return self._im.resize((1760, 1920))
+
 
 def dxScore(dx: int) -> Tuple[int, int]:
     """
@@ -281,6 +297,7 @@ def changeColumnWidth(s: str, len: int) -> str:
             sList.append(ch)
     return ''.join(sList)
 
+
 def local_generate50_alt(obj, username):
     sd_best = []
     dx_best = []
@@ -295,7 +312,4 @@ def local_generate50_alt(obj, username):
 
     draw_alt = DrawBestAlt(sd_best, dx_best, username)
     res = draw_alt.draw()
-    return res, 0 
-
-    
-
+    return res, 0
