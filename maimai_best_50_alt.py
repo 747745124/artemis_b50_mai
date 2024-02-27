@@ -140,7 +140,7 @@ class DrawBestAlt:
             except:
                 cover = Image.open(cover_dir + '0.png').resize((135, 135))
 
-            info.type = 'DX' if type_t else 'SD'
+            info.type = 'DX' if int(info.idNum) > 10000 else 'SD'
             version = Image.open(pic_dir + f'UI_RSL_MBase_Parts_{info.type}.png').resize((55, 19))
 
             rate = Image.open(pic_dir + f'UI_TTR_Rank_{mod_string(info.rate)}.png').resize((95, 44))
